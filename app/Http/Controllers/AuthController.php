@@ -52,9 +52,8 @@ class AuthController extends Controller
             });
 
         return response()->json(['success'=> true, 'message'=> 'Thanks for signing up! Please check your email to complete your registration.']);
+        
     }
-
-
 
     /**
      * API Verify User
@@ -73,14 +72,19 @@ class AuthController extends Controller
                     'message'=> 'Account already verified...'
                 ]);
             }
-            $user->update(['is_verified' => 1]);
-            DB::table('user_verifications')->where('token',$verification_code)->delete();
-            return response()->json([
+            $user->is_verified = 1;
+            $user->save();
+            //DB::table('user_verifications')->where('token',$verification_code)->delete();
+            return view ("verificar", [
                 'success'=> true,
                 'message'=> 'You have successfully verified your email address.'
             ]);
         }
-        return response()->json(['success'=> false, 'error'=> "Verification code is invalid."]);
+        // return response()->json(['success'=> false, 'error'=> "Verification code is invalid."]);
+        return view ("verificar", [
+            'success'=> false, 
+            'message'=> "Verification code is invalid."
+            ]);
     }
 
     /**
@@ -97,6 +101,8 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ];
+        $validator = Validator::make($credentials, $rules);
+
         if($validator->fails()) {
             return response()->json(['success'=> false, 'error'=> $validator->messages()], 401);
         }
@@ -136,7 +142,7 @@ class AuthController extends Controller
         }
     }
 
-        /**
+    /**
      * API Recover Password
      *
      * @param Request $request

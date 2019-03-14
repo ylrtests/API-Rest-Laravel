@@ -15,7 +15,7 @@ class Category extends Model
         'name'
     ];
 
-    public $timestamp = false;
+    public $timestamps = false;
 
     /**
      * Get the products for the category

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Product;
 use App\Category;
 use Validator, Exception;
@@ -40,17 +41,17 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-
+               
         $rules = [
-            'name' => 'required|unique:product|max:60',
+            'name' => 'required|unique:products|max:60',
             'price' => 'required|numeric',
-            'category_id' => 'required|exists:category,id',
-            'name' => 'required|unique:product|max:60',
+            'category_id' => 'required|exists:categories,id',
             'quantity' => 'required|numeric'
         ];
 
         $validator = Validator::make($data, $rules);
-
+        //return response()->json(['temp'=> 'after validator ']);
+                
         if($validator->fails()) {
             return response()->json([
                 'success'=> false, 
@@ -64,7 +65,7 @@ class ProductController extends Controller
         catch(Exception $ex){
             return response()->json([
                 'success'=> false, 
-                'error'=> $ex->messages()
+                'error'=> $ex->getMessage()
                 ]);
         }
 
@@ -72,8 +73,6 @@ class ProductController extends Controller
             'success'=> true, 
             'message'=> 'Se registro producto con éxito.'
             ]);
-
-       
 
     }
 
@@ -86,8 +85,15 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::where('id',$id)->first();
+
+        if($product == null){
+            return response()->json([
+                'success'=> false, 
+                'error'=> 'No se pudo encontrar el producto. Verifique el id del producto.'
+                ]);
+        }
+               
         $product->category;
-    
 
         return response()->json([
             'success'=> true, 
@@ -107,12 +113,12 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
+        //return response()->json(['temp'=> $data]);
 
         $rules = [
-            'name' => 'required|unique:product|max:60',
+            'name' => ['required','max:60',Rule::unique('products')->ignore($id)],
             'price' => 'required|numeric',
-            'category_id' => 'required|exists:category,id',
-            'name' => 'required|unique:product|max:60',
+            'category_id' => 'required|exists:categories,id',
             'quantity' => 'required|numeric'
         ];
 
@@ -141,7 +147,7 @@ class ProductController extends Controller
         catch(Exception $ex){
             return response()->json([
                 'success'=> false, 
-                'error'=> $ex->messages()
+                'error'=> $ex->getMessage()
                 ]);
         }
 
@@ -169,13 +175,13 @@ class ProductController extends Controller
                     ]);
            }
 
-           $product->update(['estado' => 0]);
+           $product->update(['status' => 0]);
         }
 
         catch(Exception $ex){
             return response()->json([
                 'success'=> false, 
-                'error'=> $ex->messages()
+                'error'=> $ex->getMessage()
                 ]);
         }
 
@@ -203,13 +209,13 @@ class ProductController extends Controller
                     ]);
            }
 
-           $product->update(['estado' => 1]);
+           $product->update(['status' => 1]);
         }
 
         catch(Exception $ex){
             return response()->json([
                 'success'=> false, 
-                'error'=> $ex->messages()
+                'error'=> $ex->getMessage()
                 ]);
         }
 

@@ -15,7 +15,7 @@ class Product extends Model
         'name', 'price', 'category_id', 'quantity', 'status'
     ];
 
-    public $timestamp = false;
+    public $timestamps = false;
 
      /**
      * Get the category for the product

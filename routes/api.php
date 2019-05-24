@@ -23,4 +23,6 @@ Route::group(['middleware' => ['jwt.auth']], function() {
         'as'   => 'product.activate'
         ]);
 
+    Route::get('categorias/select','CategoriaController@select');
+
 });

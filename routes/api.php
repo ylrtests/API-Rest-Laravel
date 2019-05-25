@@ -15,14 +15,14 @@ Route::group(['middleware' => ['jwt.auth']], function() {
     });
 
     Route::apiResource('product','ProductController')->except([
-        'create', 'edit'
+        'create', 'edit', 'destroy'
     ]);
 
-    Route::put('product/{product}/activate',[
-        'uses' => 'ProductController@activate',
-        'as'   => 'product.activate'
+    Route::put('product/update/status/{product}',[
+        'uses' => 'ProductController@updateStatusProduct',
+        'as'   => 'product.update.status'
         ]);
 
-    Route::get('categorias/select','CategoriaController@select');
+    Route::get('/categories/select','CategoriaController@select');
 
 });

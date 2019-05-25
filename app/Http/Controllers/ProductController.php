@@ -158,12 +158,12 @@ class ProductController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update status of the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function updateStatusProduct($id)
     {
         try{
            $product = Product::find($id);
@@ -175,7 +175,8 @@ class ProductController extends Controller
                     ]);
            }
 
-           $product->update(['status' => 0]);
+           $valorEstado = $product['status'] == 1 ? 0 : 1;
+           $product->update(['status' => $valorEstado]);
         }
 
         catch(Exception $ex){
@@ -184,44 +185,18 @@ class ProductController extends Controller
                 'error'=> $ex->getMessage()
                 ]);
         }
-
-        return response()->json([
-            'success'=> true, 
-            'message'=> 'Se ha dado de baja el producto con éxito.'
-            ]);
-    }
-
-    /**
-     * Activate the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function activate($id)
-    {
-        try{
-           $product = Product::find($id);
-           
-           if(!$product){
-                return response()->json([
-                    'success'=> false, 
-                    'error'=> 'No se encontró el producto.'
-                    ]);
-           }
-
-           $product->update(['status' => 1]);
-        }
-
-        catch(Exception $ex){
+        if($valorEstado == 1){
             return response()->json([
-                'success'=> false, 
-                'error'=> $ex->getMessage()
+                'success'=> true, 
+                'message'=> 'Se ha activado el producto con éxito.'
                 ]);
         }
-
-        return response()->json([
-            'success'=> true, 
-            'message'=> 'Se ha activado el producto con éxito.'
-            ]);
+        else{
+            return response()->json([
+                'success'=> true, 
+                'message'=> 'Se ha dado de baja el producto con éxito.'
+                ]);
+        }
     }
+
 }

@@ -51,7 +51,9 @@ class AuthController extends Controller
                 $mail->subject($subject);
             });
 
-        return response()->json(['success'=> true, 'message'=> 'Thanks for signing up! Please check your email to complete your registration.']);
+        return response()->json([
+            'success'=> true, 
+            'message'=> 'Thanks for signing up! Please check your email to complete your registration.']);
         
     }
 
@@ -162,10 +164,13 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             //Return with error
             $error_message = $e->getMessage();
-            return response()->json(['success' => false, 'error' => $error_message], 401);
+            return response()->json(['success' => false, 
+            'error' => $error_message], 401);
         }
         return response()->json([
-            'success' => true, 'data'=> ['message'=> 'A reset email has been sent! Please check your email.']
+            'success' => true, 
+            'data'=> [
+                'message'=> 'A reset email has been sent! Please check your email.']
         ]);
     }
 

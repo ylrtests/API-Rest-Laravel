@@ -50,12 +50,13 @@ class ProductController extends Controller
         ];
 
         $validator = Validator::make($data, $rules);
-        //return response()->json(['temp'=> 'after validator ']);
                 
         if($validator->fails()) {
+            $message = $validator->errors()->first();
+
             return response()->json([
                 'success'=> false, 
-                'error'=> $validator->messages()
+                'message'=> $message
                 ]);
         }
 
@@ -65,7 +66,7 @@ class ProductController extends Controller
         catch(Exception $ex){
             return response()->json([
                 'success'=> false, 
-                'error'=> $ex->getMessage()
+                'message'=> $ex->getMessage()
                 ]);
         }
 
@@ -89,7 +90,7 @@ class ProductController extends Controller
         if($product == null){
             return response()->json([
                 'success'=> false, 
-                'error'=> 'No se pudo encontrar el producto. Verifique el id del producto.'
+                'message'=> 'No se pudo encontrar el producto. Verifique el id del producto.'
                 ]);
         }
                
@@ -113,7 +114,6 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        //return response()->json(['temp'=> $data]);
 
         $rules = [
             'name' => ['required','max:60',Rule::unique('products')->ignore($id)],
@@ -125,9 +125,11 @@ class ProductController extends Controller
         $validator = Validator::make($data, $rules);
 
         if($validator->fails()) {
+            $message = $validator->errors()->first();
+
             return response()->json([
                 'success'=> false, 
-                'error'=> $validator->messages()
+                'message'=> $message
                 ]);
         }
 
@@ -137,7 +139,7 @@ class ProductController extends Controller
            if(!$product){
                 return response()->json([
                     'success'=> false, 
-                    'error'=> 'No se encontró el producto.'
+                    'message'=> 'No se encontró el producto.'
                     ]);
            }
 
@@ -171,7 +173,7 @@ class ProductController extends Controller
            if(!$product){
                 return response()->json([
                     'success'=> false, 
-                    'error'=> 'No se encontró el producto.'
+                    'message'=> 'No se encontró el producto.'
                     ]);
            }
 
@@ -182,7 +184,7 @@ class ProductController extends Controller
         catch(Exception $ex){
             return response()->json([
                 'success'=> false, 
-                'error'=> $ex->getMessage()
+                'message'=> $ex->getMessage()
                 ]);
         }
         if($valorEstado == 1){

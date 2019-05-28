@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 
 use JWTAuth;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Validator, DB, Hash, Mail;
 use Illuminate\Support\Facades\Password;
@@ -175,6 +176,39 @@ class AuthController extends Controller
             'data'=> [
                 'message'=> 'A reset email has been sent! Please check your email.']
         ]);
+    }
+
+    /**
+     * Get the user by token.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUser(Request $request){
+
+        try{
+            $user = JWTAuth::parseToken()->authenticate();
+        }
+        catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return response()->json([
+                'success'=> false, 
+                'message'=> 'no se encontró el usuario'
+                ]);
+    
+        }
+        if($user){
+            return response()->json([
+                'success'=> true, 
+                'user'=> $user
+                ]);
+        }
+        else{
+            return response()->json([
+                'success'=> false, 
+                'message'=> 'no se encontró el usuario'
+                ]);
+        }
+        
     }
 
 }
